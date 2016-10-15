@@ -23,6 +23,7 @@ function initMap() {
             infoWindow.setPosition(pos);
             infoWindow.setContent('Your Location');
             //map.setCenter(pos);
+            //pos = {lat:43.4725383,lng:-80.5422333};
             findClassroom(pos);
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
@@ -40,7 +41,17 @@ function findClassroom(pos){
   var rch306 = {lat: 43.4701314,lng: -80.5408638};
   var rch308 = {lat: 43.4703333,lng: -80.541016};
   var rch309 = {lat: 43.4704156,lng: -80.5408316};
-  var roomlist = [rch301, rch302, rch305, rch306, rch308, rch309];
+
+  var mc2065 = {lat:43.4718448,lng:-80.5436564};
+  var mc2066 = {lat:43.4717816,lng:-80.5437959};
+  var mc2054 = {lat:43.4721067,lng:-80.5438234};
+  var mc2017 = {lat:43.4720502,lng:-80.5439716};
+  var mc2038 = {lat:43.4724103,lng:-80.5440098};
+  var mc2035 = {lat:43.4723612,lng:-80.5441405};
+  var mc2034 = {lat:43.472313,lng:-80.54427}; 
+
+  var roomlist = [rch301, rch302, rch305, rch306, rch308, rch309, mc2065, mc2066, mc2054, mc2017, mc2038, mc2035, mc2034];
+  var roomname = ["rch301", "rch302", "rch305", "rch306", "rch308", "rch309","mc2065", "mc2066", "mc2054", "mc2017", "mc2038", "mc2035", "mc2034"];
     var lat = pos.lat;
     var lng = pos.lng;
     var R = 6371; // radius of earth in km
@@ -60,12 +71,36 @@ function findClassroom(pos){
             closest = i;
         }
     }
-  var marker = new google.maps.Marker({
-    position: roomlist[closest],
-    map: map
-  });
+  // var marker = new google.maps.Marker({
+  //   position: roomlist[closest],
+  //   map: map,
+  // });
+  var infoWindow = new google.maps.InfoWindow({map: map});
+            infoWindow.setPosition(roomlist[closest]);
+            infoWindow.setContent(roomname[closest]);
+  navagation(pos, roomlist[closest]);
 
+}
 
+function navagation(from, to){
+  var directionsService = new google.maps.DirectionsService();
+   var directionsDisplay = new google.maps.DirectionsRenderer();
+        
+         directionsDisplay.setMap(map);
+         directionsDisplay.setPanel(document.getElementById('panel'));
+    
+         var request = {
+           origin: from, 
+           destination: to,
+           travelMode: google.maps.DirectionsTravelMode.WALKING,
+           optimizeWaypoints: false
+         };
+    
+         directionsService.route(request, function(response, status) {
+           if (status == google.maps.DirectionsStatus.OK) {
+             directionsDisplay.setDirections(response);
+           }
+         });
 }
 
       function handleLocationError(browserHasGeolocation, infoWindow, pos) {
