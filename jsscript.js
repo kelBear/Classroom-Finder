@@ -1,5 +1,5 @@
 var map;
-var pos;
+var pos={lat:43.4717555,lng:-80.5453032};
 var directionsDisplay;
 
 var RCH = [3];
