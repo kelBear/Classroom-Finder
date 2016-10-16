@@ -1,11 +1,15 @@
 var map;
 
 function initMap() {
+
   var uluru = {lat: 43.4699626, lng: -80.5427128};
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 16,
     center: uluru
   });
+  // where data is a GeoJSON feature collection
+
+  map.data.loadGeoJson('geoJson.json');
 
   // GPS location
 
@@ -48,7 +52,7 @@ function findClassroom(pos){
   var mc2017 = {lat:43.4720502,lng:-80.5439716};
   var mc2038 = {lat:43.4724103,lng:-80.5440098};
   var mc2035 = {lat:43.4723612,lng:-80.5441405};
-  var mc2034 = {lat:43.472313,lng:-80.54427}; 
+  var mc2034 = {lat:43.472313,lng:-80.54427};
 
   var roomlist = [rch301, rch302, rch305, rch306, rch308, rch309, mc2065, mc2066, mc2054, mc2017, mc2038, mc2035, mc2034];
   var roomname = ["rch301", "rch302", "rch305", "rch306", "rch308", "rch309","mc2065", "mc2066", "mc2054", "mc2017", "mc2038", "mc2035", "mc2034"];
@@ -85,17 +89,17 @@ function findClassroom(pos){
 function navagation(from, to){
   var directionsService = new google.maps.DirectionsService();
    var directionsDisplay = new google.maps.DirectionsRenderer();
-        
+
          directionsDisplay.setMap(map);
          directionsDisplay.setPanel(document.getElementById('panel'));
-    
+
          var request = {
-           origin: from, 
+           origin: from,
            destination: to,
            travelMode: google.maps.DirectionsTravelMode.WALKING,
            optimizeWaypoints: false
          };
-    
+
          directionsService.route(request, function(response, status) {
            if (status == google.maps.DirectionsStatus.OK) {
              directionsDisplay.setDirections(response);
