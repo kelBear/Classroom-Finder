@@ -1,4 +1,6 @@
 var map;
+var pos;
+var directionsDisplay;
 
 function initMap() {
   var uluru = {lat: 43.4699626, lng: -80.5427128};
@@ -12,7 +14,7 @@ function initMap() {
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = {
+            pos = {
               lat: position.coords.latitude,
               lng: position.coords.longitude
             };
@@ -24,7 +26,7 @@ function initMap() {
             infoWindow.setContent('Your Location');
             //map.setCenter(pos);
             //pos = {lat:43.4725383,lng:-80.5422333};
-            findClassroom(pos);
+            //findClassroom();
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
@@ -34,7 +36,12 @@ function initMap() {
     }
 }
 function rad(x) {return x*Math.PI/180;}
-function findClassroom(pos){
+function findClassroom(){
+  var e = document.getElementById("Building");
+  var building = e.options[e.selectedIndex].value;
+  var f = document.getElementById("Floor");
+  var floor = f.options[f.selectedIndex].value;
+
   var rch301 = {lat: 43.4704565, lng: -80.5405506};
   var rch302 = {lat: 43.4703416,lng: -80.5404776};
   var rch305 = {lat: 43.4701796,lng: -80.5406727};
@@ -49,14 +56,31 @@ function findClassroom(pos){
   var mc2038 = {lat:43.4724103,lng:-80.5440098};
   var mc2035 = {lat:43.4723612,lng:-80.5441405};
   var mc2034 = {lat:43.472313,lng:-80.54427}; 
-
-  var roomlist = [rch301, rch302, rch305, rch306, rch308, rch309, mc2065, mc2066, mc2054, mc2017, mc2038, mc2035, mc2034];
-  var roomname = ["rch301", "rch302", "rch305", "rch306", "rch308", "rch309","mc2065", "mc2066", "mc2054", "mc2017", "mc2038", "mc2035", "mc2034"];
+  var buildingNames = ["RCH", "MC"];
+  var RCH = [rch301, rch302, rch305, rch306, rch308, rch309];
+  var MC = [mc2065, mc2066, mc2054, mc2017, mc2038, mc2035, mc2034];
+  var buildingList = [RCH, MC];
+  //var roomname = ["rch301", "rch302", "rch305", "rch306", "rch308", "rch309","mc2065", "mc2066", "mc2054", "mc2017", "mc2038", "mc2035", "mc2034"];
     var lat = pos.lat;
     var lng = pos.lng;
     var R = 6371; // radius of earth in km
     var distances = [];
     var closest = -1;
+    var roomlist = [];
+    if(building == "ALL"){
+      for(i=0; i<buildingList.length;i++){
+        roomlist = roomlist.concat(buildingList[i]) ; 
+      }
+    }
+    else{
+      for(i=0; i<buildingNames.length;i++){
+        if(building==buildingNames[i]){
+          roomlist=buildingList[i];
+          break;
+        }
+      }
+    }
+    //console.log(roomlist[1]);
     for( i=0;i<roomlist.length; i++ ) {
         var mlat = roomlist[i].lat;
         var mlng = roomlist[i].lng;
@@ -75,17 +99,22 @@ function findClassroom(pos){
   //   position: roomlist[closest],
   //   map: map,
   // });
-  var infoWindow = new google.maps.InfoWindow({map: map});
-            infoWindow.setPosition(roomlist[closest]);
-            infoWindow.setContent(roomname[closest]);
+  // var infoWindow = new google.maps.InfoWindow({map: map});
+  //           infoWindow.setPosition(roomlist[closest]);
+  //           infoWindow.setContent(roomname[closest]);
   navagation(pos, roomlist[closest]);
 
 }
-
+function startNavigation() {
+  if(directionsDisplay){
+    directionsDisplay.setMap(null);
+  }
+  findClassroom();
+}
 function navagation(from, to){
   var directionsService = new google.maps.DirectionsService();
-   var directionsDisplay = new google.maps.DirectionsRenderer();
-        
+  directionsDisplay = new google.maps.DirectionsRenderer();
+
          directionsDisplay.setMap(map);
          directionsDisplay.setPanel(document.getElementById('panel'));
     

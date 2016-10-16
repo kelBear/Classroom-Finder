@@ -7,13 +7,17 @@
 
 <body>
 	<form action="">
-		<select name="Building">
+		<select id="Building">
+			<option value="ALL">ALL</option>
 			<option value="RCH">RCH</option>
+			<option value="MC">MC</option>
 		</select>
-		<select name="Floor">
+		<select id="Floor">
+			<option value="ALL">3</option>
 			<option value="3">3</option>
+			<option value="2">2</option>
 		</select>
-		<input type="submit" value="Submit">
+		<input type="button" value="Submit" onclick="startNavigation()">
 	</form>
     <div id="map"></div>
     <script async defer
