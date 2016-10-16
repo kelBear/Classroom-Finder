@@ -1,6 +1,8 @@
 var map;
 var pos={lat:43.4717555,lng:-80.5453032};
 var directionsDisplay;
+var building = "All";
+var floor = 1;
 
 var RCH = [3];
 var MC = [2];
@@ -8,13 +10,13 @@ var MC = [2];
 $(function(){
   //on floor change
   $("#Building").change(function () {
-      var floor = $('#Building').val();
-      //loadFloor(floor);
+      building = $('#Building').val();
+      loadFloor(floor);
   });
 
   //on floor change
   $("#Floor").change(function () {
-      var floor = parseInt($('#Floor').val());
+      floor = parseInt($('#Floor').val());
       loadFloor(floor);
 
   });
@@ -30,10 +32,10 @@ function loadFloor(floor) {
   var files = [];
   switch(floor) {
     case 2:
-        files.push('MCF2.json');
+        if (building=='All' || building=='MC') files.push('MCF2.json');
         break;
     case 3:
-        files.push('RCHF3.json');
+        if (building=='All' || building=='RCH') files.push('RCHF3.json');
         break;
   }
 
@@ -59,6 +61,21 @@ function loadFile(file) {
       var feature = features[i];
       var props = feature.properties;
       var found = $.inArray(props.building + props.room, available) > -1;
+
+      var total = 0;
+      var sumLat = 0;
+      var sumLng = 0;
+
+      var coords = feature.geometry.coordinates[0];
+      for (var j = 0; j < coords.length; j++) {
+        sumLat += coords[j][1];
+        sumLng += coords[j][0];
+        total++;
+      }
+      props.lat = sumLat / total;
+      props.lng = sumLng / total;
+      console.log(props);
+
       props.available = found; //set availablity property for room
     }
     map.data.addGeoJson(json);
@@ -99,7 +116,7 @@ function initMap() {
   });
 
   //load first floor
-  loadFloor(1);
+  loadFloor(floor);
 
   // GPS location
         // Try HTML5 geolocation.
