@@ -2,7 +2,16 @@ var map;
 var pos;
 var directionsDisplay;
 
+var RCH = [3];
+var MC = [2];
+
 $(function(){
+  //on floor change
+  $("#Building").change(function () {
+      var floor = $('#Building').val();
+      //loadFloor(floor);
+  });
+
   //on floor change
   $("#Floor").change(function () {
       var floor = parseInt($('#Floor').val());
@@ -17,31 +26,32 @@ function loadFloor(floor) {
     map.data.remove(feature);
   });
 
-  //search for correct geoJson file
-  var file = 'UWF3.json';
+  //search
+  var files = [];
   switch(floor) {
-    case 1:
-        file = 'UWF1.json';
-        break;
     case 2:
-        file = 'UWF2.json';
+        files.push('MCF2.json');
         break;
     case 3:
-        file = 'UWF3.json';
-        loadFile(file); // Move this later
-        break;
-    default:
-        file = 'UWF3.json';
+        files.push('RCHF3.json');
         break;
   }
 
+  loadFiles(files);
+
+}
+function loadFiles(files) {
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    loadFile(file);
+  }
 }
 
 //load geoJsonFile
 function loadFile(file) {
   $.getJSON(file, function(json) {
     //TODO: replace this with a api call
-    var available = [ "RCH301", "RCH302", "RCH305", "RCH306", "RCH308", "RCH309" ];
+    var available = [ "RCH301", "RCH302", "RCH305", "RCH306", "RCH308", "RCH309", "MC2065", "MC2066", "MC2054", "MC2017", "MC2038", "MC2035", "MC2034" ];
     var features = json.features;
 
     //loop through rooms on floor
