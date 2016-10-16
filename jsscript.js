@@ -4,6 +4,7 @@ var directionsDisplay;
 var building = "All";
 var floor = 1;
 
+var allFiles = ['MC_F2','RCH_F3'];
 var RCH = [3];
 var MC = [2];
 
@@ -30,13 +31,18 @@ function loadFloor(floor) {
 
   //search
   var files = [];
-  switch(floor) {
-    case 2:
-        if (building=='All' || building=='MC') files.push('MCF2.json');
-        break;
-    case 3:
-        if (building=='All' || building=='RCH') files.push('RCHF3.json');
-        break;
+  for (var i = 0; i < allFiles.length; i++) {
+    file = allFiles[i];
+    if (parseInt(file.substring(file.length-1)) === floor) {
+      if (building === "All") {
+        files.push(file+'.json');
+      } else {
+        var b = file.substr(0, file.indexOf('_'));
+        if (b === building) {
+          files.push(file+'.json');
+        }
+      }
+    }
   }
 
   loadFiles(files);
@@ -66,6 +72,7 @@ function loadFile(file) {
       var sumLat = 0;
       var sumLng = 0;
 
+      //get center
       var coords = feature.geometry.coordinates[0];
       for (var j = 0; j < coords.length; j++) {
         sumLat += coords[j][1];
@@ -74,7 +81,6 @@ function loadFile(file) {
       }
       props.lat = sumLat / total;
       props.lng = sumLng / total;
-      console.log(props);
 
       props.available = found; //set availablity property for room
     }
