@@ -1,5 +1,58 @@
 var map;
 
+$(function(){
+
+  //on floor change
+  $("#floor").change(function () {
+      var floor = parseInt($('#floor').val());
+      loadFloor(floor);
+  });
+});
+
+function loadFloor(floor) {
+  //clear previous features
+  map.data.forEach(function(feature) {
+    map.data.remove(feature);
+  });
+
+  //search for correct geoJson file
+  var file = 'UWF3.json';
+  switch(floor) {
+    case 1:
+        file = 'UWF1.json';
+        break;
+    case 2:
+        file = 'UWF2.json';
+        break;
+    case 3:
+        file = 'UWF3.json';
+        loadFile(file); // Move this later
+        break;
+    default:
+        file = 'UWF3.json';
+        break;
+  }
+
+}
+
+//load geoJsonFile
+function loadFile(file) {
+  $.getJSON(file, function(json) {
+    //TODO: replace this with a api call
+    var available = [ "RCH301", "RCH302", "RCH305", "RCH306", "RCH308", "RCH309" ];
+    var features = json.features;
+
+    //loop through rooms on floor
+    for (var i = 0; i < features.length; i++) {
+      var feature = features[i];
+      var props = feature.properties;
+      var found = $.inArray(props.building + props.room, available) > -1;
+      props.available = found; //set availablity property for room
+    }
+    map.data.addGeoJson(json);
+  });
+}
+
 function initMap() {
 
   var uluru = {lat: 43.4699626, lng: -80.5427128};
@@ -7,49 +60,34 @@ function initMap() {
     zoom: 16,
     center: uluru
   });
+
   // where data is a GeoJSON feature collection
   var roomInfoWindow = new google.maps.InfoWindow({map: map});
+  roomInfoWindow.close();
 
-  $.getJSON("geoJson.json", function(json) {
-
-    var available = ["RCH301", "RCH302", "RCH305", "RCH306", "RCH308", "RCH309"];
-    var features = json.features;
-
-    for (var i = 0; i < features.length; i++) {
-      var feature = features[i];
-      console.log(feature);
-      var props = feature.properties;
-      var found = $.inArray(props.building + props.room, available) > -1;
-      props.available = found;
-
-    }
-
-    map.data.addGeoJson(json);
-    map.data.setStyle(function(feature) {
-      var available = feature.getProperty('available');
-      var color = available ? 'green' : 'red';
-      return {
-        fillColor: color,
-        strokeWeight: 2
-      };
-    });
-    map.data.addListener('click', function(event) {
-      roomInfoWindow.open(map, this);
-      var pos = {
-        lat:event.feature.getProperty('lat'),
-        lng:event.feature.getProperty('lng')
-      };
-      roomInfoWindow.setPosition(pos);
-      roomInfoWindow.setContent(event.feature.getProperty('room'));
-    });
-    map.data.addListener('mouseout', function(event) {
-      //roomInfoWindow.close();
-    });
-
+  map.data.setStyle(function(feature) {
+    var available = feature.getProperty('available');
+    //set colour based on availability can be switch
+    var color = available ? 'green' : 'red';
+    return {
+      fillColor: color,
+      strokeWeight: 2
+    };
   });
 
+  //on room click
+  map.data.addListener('click', function(event) {
+    roomInfoWindow.open(map, this);
+    var pos = {
+      lat:event.feature.getProperty('lat'),
+      lng:event.feature.getProperty('lng')
+    };
+    roomInfoWindow.setPosition(pos);
+    roomInfoWindow.setContent(event.feature.getProperty('room'));
+  });
 
-  console.log(map.data);
+  //load first floor
+  loadFloor(1);
 
   // GPS location
         // Try HTML5 geolocation.

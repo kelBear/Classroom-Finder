@@ -2,12 +2,12 @@
 <html>
 <head>
   <link rel="stylesheet" href="style.css">
-  <script src="jsscript.js"></script>
   <link rel="stylesheet" href="js/leaflet/leaflet.css" />
   <script src="js/leaflet/leaflet.js"></script>
   <script src="js/leaflet-indoor.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
+  <script src="jsscript.js"></script>
 
 </head>
 
@@ -16,8 +16,11 @@
 		<select name="Building">
 			<option value="RCH">RCH</option>
 		</select>
-		<select name="Floor">
-			<option value="3">3</option>
+		<select id="floor" name="Floor">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
 		</select>
 		<input type="submit" value="Submit">
 	</form>
