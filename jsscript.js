@@ -5,8 +5,8 @@ var directionsDisplay;
 $(function(){
 
   //on floor change
-  $("#floor").change(function () {
-      var floor = parseInt($('#floor').val());
+  $("#Floor").change(function () {
+      var floor = parseInt($('#Floor').val());
       loadFloor(floor);
   });
 });
@@ -135,7 +135,7 @@ function findClassroom(){
   var mc2017 = {lat:43.4720502,lng:-80.5439716};
   var mc2038 = {lat:43.4724103,lng:-80.5440098};
   var mc2035 = {lat:43.4723612,lng:-80.5441405};
-  var mc2034 = {lat:43.472313,lng:-80.54427}; 
+  var mc2034 = {lat:43.472313,lng:-80.54427};
   var buildingNames = ["RCH", "MC"];
   var RCH = [rch301, rch302, rch305, rch306, rch308, rch309];
   var MC = [mc2065, mc2066, mc2054, mc2017, mc2038, mc2035, mc2034];
@@ -149,7 +149,7 @@ function findClassroom(){
     var roomlist = [];
     if(building == "ALL"){
       for(i=0; i<buildingList.length;i++){
-        roomlist = roomlist.concat(buildingList[i]) ; 
+        roomlist = roomlist.concat(buildingList[i]) ;
       }
     }
     else{
