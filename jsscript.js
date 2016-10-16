@@ -8,30 +8,50 @@ function initMap() {
     center: uluru
   });
   // where data is a GeoJSON feature collection
+  var roomInfoWindow = new google.maps.InfoWindow({map: map});
 
   $.getJSON("geoJson.json", function(json) {
-    var geo = [];
-    console.log(json); // this will show the info it in firebug console
+
+    var available = ["RCH301", "RCH302", "RCH305", "RCH306", "RCH308", "RCH309"];
     var features = json.features;
-    console.log(features);
 
     for (var i = 0; i < features.length; i++) {
-      feature = features[i];
-      coords = feature.geometry.coordinates[0];
-      coorList = [];
-      for (var j = 0; j<coords.length; j++) {
-        c = coords[j];
-        coorList.push({lat: c[0], lng: c[1]});
-      }
-      map.data.add({geometry: new google.maps.Data.Polygon([coorList])});
-      console.log(coorList);
+      var feature = features[i];
+      console.log(feature);
+      var props = feature.properties;
+      var found = $.inArray(props.building + props.room, available) > -1;
+      props.available = found;
+
     }
 
+    map.data.addGeoJson(json);
+    map.data.setStyle(function(feature) {
+      var available = feature.getProperty('available');
+      var color = available ? 'green' : 'red';
+      return {
+        fillColor: color,
+        strokeWeight: 2
+      };
+    });
+    map.data.addListener('click', function(event) {
+      roomInfoWindow.open(map, this);
+      var pos = {
+        lat:event.feature.getProperty('lat'),
+        lng:event.feature.getProperty('lng')
+      };
+      roomInfoWindow.setPosition(pos);
+      roomInfoWindow.setContent(event.feature.getProperty('room'));
+    });
+    map.data.addListener('mouseout', function(event) {
+      //roomInfoWindow.close();
+    });
 
   });
 
-  // GPS location
 
+  console.log(map.data);
+
+  // GPS location
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
@@ -46,7 +66,7 @@ function initMap() {
             infoWindow.setPosition(pos);
             infoWindow.setContent('Your Location');
             //map.setCenter(pos);
-            //pos = {lat:43.4725383,lng:-80.5422333};
+
             findClassroom(pos);
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
