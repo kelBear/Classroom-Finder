@@ -33,3 +33,21 @@ body, html {
     left: 45%;
 	top: 80%;
 }
+#Building{
+	width: 50%;
+	height: 30px;
+}
+#Floor{
+	width: 30%;
+	height: 30px;
+}
+input{
+	color: white;
+	background-color: #77C088;
+	border-radius: 5px;
+	border: 1px;
+	box-shadow: 2px 2px 2px #888888;
+	font-size:12px;
+	width: 18%;
+	height: 28px;
+}

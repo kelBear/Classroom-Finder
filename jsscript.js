@@ -70,7 +70,8 @@ function initMap() {
   var uluru = {lat: 43.4699626, lng: -80.5427128};
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 16,
-    center: uluru
+    center: uluru,
+    scrollwheel: false
   });
 
   // where data is a GeoJSON feature collection
@@ -148,8 +149,11 @@ function findClassroom(){
   var mc2034 = {lat:43.472313,lng:-80.54427};
   var buildingNames = ["RCH", "MC"];
   var RCH = [rch301, rch302, rch305, rch306, rch308, rch309];
+  var RCHnames = ["rch301", "rch302", "rch305", "rch306", "rch308", "rch309"];
   var MC = [mc2065, mc2066, mc2054, mc2017, mc2038, mc2035, mc2034];
+  var MCnames = ["mc2065", "mc2066", "mc2054", "mc2017", "mc2038", "mc2035", "mc2034"];
   var buildingList = [RCH, MC];
+  var buildingNameList = [RCHnames, MCnames];
   //var roomname = ["rch301", "rch302", "rch305", "rch306", "rch308", "rch309","mc2065", "mc2066", "mc2054", "mc2017", "mc2038", "mc2035", "mc2034"];
     var lat = pos.lat;
     var lng = pos.lng;
@@ -157,15 +161,18 @@ function findClassroom(){
     var distances = [];
     var closest = -1;
     var roomlist = [];
+    var roomnames = [];
     if(building == "ALL"){
       for(i=0; i<buildingList.length;i++){
         roomlist = roomlist.concat(buildingList[i]) ;
+        roomnames = roomnames.concat(buildingNameList[i]) ;
       }
     }
     else{
       for(i=0; i<buildingNames.length;i++){
         if(building==buildingNames[i]){
           roomlist=buildingList[i];
+          roomnames = buildingNameList[i];
           break;
         }
       }
@@ -189,9 +196,9 @@ function findClassroom(){
   //   position: roomlist[closest],
   //   map: map,
   // });
-  // var infoWindow = new google.maps.InfoWindow({map: map});
-  //           infoWindow.setPosition(roomlist[closest]);
-  //           infoWindow.setContent(roomname[closest]);
+  var infoWindow = new google.maps.InfoWindow({map: map});
+            infoWindow.setPosition(roomlist[closest]);
+            infoWindow.setContent(roomnames[closest]);
   navagation(pos, roomlist[closest]);
 
 }
