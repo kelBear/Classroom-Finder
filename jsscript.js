@@ -9,7 +9,26 @@ function initMap() {
   });
   // where data is a GeoJSON feature collection
 
-  map.data.loadGeoJson('geoJson.json');
+  $.getJSON("geoJson.json", function(json) {
+    var geo = [];
+    console.log(json); // this will show the info it in firebug console
+    var features = json.features;
+    console.log(features);
+
+    for (var i = 0; i < features.length; i++) {
+      feature = features[i];
+      coords = feature.geometry.coordinates[0];
+      coorList = [];
+      for (var j = 0; j<coords.length; j++) {
+        c = coords[j];
+        coorList.push({lat: c[0], lng: c[1]});
+      }
+      map.data.add({geometry: new google.maps.Data.Polygon([coorList])});
+      console.log(coorList);
+    }
+
+
+  });
 
   // GPS location
 
