@@ -3,14 +3,57 @@ var pos;
 var directionsDisplay;
 
 function initMap() {
+
   var uluru = {lat: 43.4699626, lng: -80.5427128};
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 16,
     center: uluru
   });
+  // where data is a GeoJSON feature collection
+  var roomInfoWindow = new google.maps.InfoWindow({map: map});
+
+  $.getJSON("geoJson.json", function(json) {
+
+    var available = ["RCH301", "RCH302", "RCH305", "RCH306", "RCH308", "RCH309"];
+    var features = json.features;
+
+    for (var i = 0; i < features.length; i++) {
+      var feature = features[i];
+      console.log(feature);
+      var props = feature.properties;
+      var found = $.inArray(props.building + props.room, available) > -1;
+      props.available = found;
+
+    }
+
+    map.data.addGeoJson(json);
+    map.data.setStyle(function(feature) {
+      var available = feature.getProperty('available');
+      var color = available ? 'green' : 'red';
+      return {
+        fillColor: color,
+        strokeWeight: 2
+      };
+    });
+    map.data.addListener('click', function(event) {
+      roomInfoWindow.open(map, this);
+      var pos = {
+        lat:event.feature.getProperty('lat'),
+        lng:event.feature.getProperty('lng')
+      };
+      roomInfoWindow.setPosition(pos);
+      roomInfoWindow.setContent(event.feature.getProperty('room'));
+    });
+    map.data.addListener('mouseout', function(event) {
+      //roomInfoWindow.close();
+    });
+
+  });
+
+
+  console.log(map.data);
 
   // GPS location
-
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
@@ -25,8 +68,7 @@ function initMap() {
             infoWindow.setPosition(pos);
             infoWindow.setContent('Your Location');
             //map.setCenter(pos);
-            //pos = {lat:43.4725383,lng:-80.5422333};
-            //findClassroom();
+
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
@@ -117,14 +159,14 @@ function navagation(from, to){
 
          directionsDisplay.setMap(map);
          directionsDisplay.setPanel(document.getElementById('panel'));
-    
+
          var request = {
-           origin: from, 
+           origin: from,
            destination: to,
            travelMode: google.maps.DirectionsTravelMode.WALKING,
            optimizeWaypoints: false
          };
-    
+
          directionsService.route(request, function(response, status) {
            if (status == google.maps.DirectionsStatus.OK) {
              directionsDisplay.setDirections(response);
