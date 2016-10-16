@@ -7,7 +7,8 @@ function initMap() {
   var uluru = {lat: 43.4699626, lng: -80.5427128};
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 16,
-    center: uluru
+    center: uluru,
+	scrollwheel: false
   });
   // where data is a GeoJSON feature collection
   var roomInfoWindow = new google.maps.InfoWindow({map: map});

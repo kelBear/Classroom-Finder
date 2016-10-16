@@ -7,11 +7,15 @@
   <script src="js/leaflet/leaflet.js"></script>
   <script src="js/leaflet-indoor.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-
-
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 </head>
 
 <body>
+<div class="start" id="start">
+  <p id="title">CLASSROOM <b>F I N D E R</b></p>
+  <img id="arrow" src="arrow.png" class="thumbnail"/>
+</div>
+<div class="main">
 	<form action="">
 		<select id="Building">
 			<option value="ALL">ALL</option>
@@ -29,6 +33,15 @@
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw2WE6s2obeQ2fk195ukE3wLQ4_B63cEo&callback=initMap">
     </script>
+	</div>
+	
+	  <script>
+	$("#arrow").on("click", function() {
+		$('html,body').animate({
+			scrollTop: $(".main").offset().top},
+			'slow');
+		});
+  </script>
 </body>
 
 </html>
