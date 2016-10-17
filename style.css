@@ -9,12 +9,11 @@ body, html {
 }
 
 #title {
-	position: absolute;
+	position:relative;
+	top:30%;
+	text-align:center;
 	font-family: "Century Gothic", sans-serif;
 	font-size: 72px;
-	text-align: center;
-	top: 25%;
-	left: 19%;
 }
 
 .start {
