@@ -1,3 +1,6 @@
+"scripts": {
+  "start": "node jsscript.js"
+}
 {
   "name": "classroom-finder",
   "version": "1.0.0",
