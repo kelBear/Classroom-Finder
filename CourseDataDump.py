@@ -11,7 +11,7 @@ try:
 	cursorTruncate = db.cursor()
 	cursorTruncate.execute("TRUNCATE TABLE classroomfinder.courses")
 	cursor = db.cursor()
-	cursor.execute("SELECT * FROM classroomfinder.building_rooms")
+	cursor.execute("SELECT building, room FROM classroomfinder.building_rooms")
 	result = cursor.fetchall()
 	for row in result:
 		print "processing room..."
