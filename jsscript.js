@@ -8,6 +8,14 @@ var allFiles = ['MC_F2','RCH_F3'];
 var RCH = [3];
 var MC = [2];
 
+$(function() {
+	$("#arrow").on("click", function() {
+		$('html,body').animate({
+			scrollTop: $(".main").offset().top},
+			'slow');
+		});
+});
+
 $(function(){
   //on floor change
   $("#Building").change(function () {
