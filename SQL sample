@@ -1,0 +1,14 @@
+Populate building dropdown
+	"SELECT DISTINCT building FROM building_rooms"
+
+Populate floor dropdown
+	"SELECT DISTINCT LEFT(room, 1) 'floor' FROM building_rooms WHERE building = '" + building + "'"
+	
+Retrieve lat long of each room - to search for nearest classroom
+	"SELECT * FROM building_rooms WHERE building = '" + building + "'"
+	
+	if (empty result) invalid combination of building & floor
+
+Find list of available rooms
+	"SELECT * FROM courses "
+	"WHERE building = '" + building + "' AND LEFT(room, 1) = '" + floor + "'"
