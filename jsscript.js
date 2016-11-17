@@ -3,18 +3,10 @@ var pos={lat:43.4717555,lng:-80.5453032};
 var directionsDisplay;
 var building = "All";
 var floor = 1;
-
+var available = [];
 var allFiles = ['MC_F2','RCH_F3'];
 var RCH = [3];
 var MC = [2];
-
-$(function() {
-	$("#arrow").on("click", function() {
-		$('html,body').animate({
-			scrollTop: $(".main").offset().top},
-			'slow');
-		});
-});
 
 $(function(){
   //on floor change
@@ -63,18 +55,40 @@ function loadFiles(files) {
   }
 }
 
+function loadavailable(buildings){
+  var d = new Date();
+  var h = d.getHours();
+  var m = d.getMinutes();
+  var t = h*100+m;
+  var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  var w =days[d.getDay()];
+  $.ajax({
+  url: "getrooms.php",
+  data: { 'building' : buildings, 'dow': w, 'hr': t},
+  type: 'POST',
+  dataType: 'json',
+  success: function(output) {
+    available = output;
+    findClassroom();
+  },
+  error: function(xhr, desc, err) {
+        console.log(xhr);
+        console.log("Details: " + desc + "\nError:" + err);
+      }
+  });
+}
+
 //load geoJsonFile
 function loadFile(file) {
   $.getJSON(file, function(json) {
     //TODO: replace this with a api call
-    var available = [ "RCH301", "RCH302", "RCH305", "RCH306", "RCH308", "RCH309", "MC2065", "MC2066", "MC2054", "MC2017", "MC2038", "MC2035", "MC2034" ];
+    var available2 = [ "RCH301", "RCH302", "RCH305", "RCH306", "RCH308", "RCH309", "MC2065", "MC2066", "MC2054", "MC2017", "MC2038", "MC2035", "MC2034" ];
     var features = json.features;
-
     //loop through rooms on floor
     for (var i = 0; i < features.length; i++) {
       var feature = features[i];
       var props = feature.properties;
-      var found = $.inArray(props.building + props.room, available) > -1;
+      var found = $.inArray(props.building + props.room, available2) > -1;
 
       var total = 0;
       var sumLat = 0;
@@ -90,7 +104,7 @@ function loadFile(file) {
       props.lat = sumLat / total;
       props.lng = sumLng / total;
 
-      props.available = found; //set availablity property for room
+      props.available2 = found; //set availablity property for room
     }
     map.data.addGeoJson(json);
   });
@@ -159,33 +173,6 @@ function initMap() {
 }
 function rad(x) {return x*Math.PI/180;}
 function findClassroom(){
-  var e = document.getElementById("Building");
-  var building = e.options[e.selectedIndex].value;
-  var f = document.getElementById("Floor");
-  var floor = f.options[f.selectedIndex].value;
-
-  var rch301 = {lat: 43.4704565, lng: -80.5405506};
-  var rch302 = {lat: 43.4703416,lng: -80.5404776};
-  var rch305 = {lat: 43.4701796,lng: -80.5406727};
-  var rch306 = {lat: 43.4701314,lng: -80.5408638};
-  var rch308 = {lat: 43.4703333,lng: -80.541016};
-  var rch309 = {lat: 43.4704156,lng: -80.5408316};
-
-  var mc2065 = {lat:43.4718448,lng:-80.5436564};
-  var mc2066 = {lat:43.4717816,lng:-80.5437959};
-  var mc2054 = {lat:43.4721067,lng:-80.5438234};
-  var mc2017 = {lat:43.4720502,lng:-80.5439716};
-  var mc2038 = {lat:43.4724103,lng:-80.5440098};
-  var mc2035 = {lat:43.4723612,lng:-80.5441405};
-  var mc2034 = {lat:43.472313,lng:-80.54427};
-  var buildingNames = ["RCH", "MC"];
-  var RCH = [rch301, rch302, rch305, rch306, rch308, rch309];
-  var RCHnames = ["rch301", "rch302", "rch305", "rch306", "rch308", "rch309"];
-  var MC = [mc2065, mc2066, mc2054, mc2017, mc2038, mc2035, mc2034];
-  var MCnames = ["mc2065", "mc2066", "mc2054", "mc2017", "mc2038", "mc2035", "mc2034"];
-  var buildingList = [RCH, MC];
-  var buildingNameList = [RCHnames, MCnames];
-  //var roomname = ["rch301", "rch302", "rch305", "rch306", "rch308", "rch309","mc2065", "mc2066", "mc2054", "mc2017", "mc2038", "mc2035", "mc2034"];
     var lat = pos.lat;
     var lng = pos.lng;
     var R = 6371; // radius of earth in km
@@ -193,25 +180,11 @@ function findClassroom(){
     var closest = -1;
     var roomlist = [];
     var roomnames = [];
-    if(building == "ALL"){
-      for(i=0; i<buildingList.length;i++){
-        roomlist = roomlist.concat(buildingList[i]) ;
-        roomnames = roomnames.concat(buildingNameList[i]) ;
-      }
-    }
-    else{
-      for(i=0; i<buildingNames.length;i++){
-        if(building==buildingNames[i]){
-          roomlist=buildingList[i];
-          roomnames = buildingNameList[i];
-          break;
-        }
-      }
-    }
+
     //console.log(roomlist[1]);
-    for( i=0;i<roomlist.length; i++ ) {
-        var mlat = roomlist[i].lat;
-        var mlng = roomlist[i].lng;
+    for( i=0;i<available.length; i++ ) {
+        var mlat = available[i].lat;
+        var mlng = available[i].lng;
         var dLat  = rad(mlat - lat);
         var dLong = rad(mlng - lng);
         var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -227,17 +200,22 @@ function findClassroom(){
   //   position: roomlist[closest],
   //   map: map,
   // });
+  var cl = {lat:parseFloat( available[closest].lat) ,lng:parseFloat(available[closest].lng)};
   var infoWindow = new google.maps.InfoWindow({map: map});
-            infoWindow.setPosition(roomlist[closest]);
-            infoWindow.setContent(roomnames[closest]);
-  navagation(pos, roomlist[closest]);
+            infoWindow.setPosition(cl);
+            infoWindow.setContent(available[closest].building + " " + available[closest].room);
+  navagation(pos, cl);
 
 }
 function startNavigation() {
   if(directionsDisplay){
     directionsDisplay.setMap(null);
   }
-  findClassroom();
+  var e = document.getElementById("Building");
+  var building = e.options[e.selectedIndex].value;
+  loadavailable(building);
+  var f = document.getElementById("Floor");
+  var floor = f.options[f.selectedIndex].value;
 }
 function navagation(from, to){
   var directionsService = new google.maps.DirectionsService();

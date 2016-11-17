@@ -3,10 +3,7 @@ body, html {
   width: 100%;
 }
 
-#map {
-    height: 100%;
-    width: 100%;
-}
+
 
 #title {
 	position:relative;
@@ -40,6 +37,25 @@ body, html {
 	width: 30%;
 	height: 30px;
 }
+#sidebar {
+	font-family: "Century Gothic", sans-serif;
+	height: 100%;
+    position:absolute;
+    width:20%;
+    background:#FFF;
+}
+#botmain{
+	height: 95%;
+	width: 100%;
+	position:relative;
+}
+#map {
+     height: 100%;
+     width:80%;
+     position:relative;
+     float:right;
+}
+
 input{
 	color: white;
 	background-color: #77C088;

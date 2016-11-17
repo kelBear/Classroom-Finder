@@ -1,16 +1,23 @@
 {
   "name": "classroom-finder",
-  "version": "0.0.0",
-  "description": "classroom finder web",
+  "version": "1.0.0",
+  "description": "SE 464 Project",
   "main": "jsscript.js",
   "dependencies": {
-    "uwapi": "~1.1.1"
+    "uwapi": "^1.1.1"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-	"start": "node index.html"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kelBear/Classroom-Finder.git"
   },
   "author": "",
-  "license": "BSD-2-Clause"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kelBear/Classroom-Finder/issues"
+  },
+  "homepage": "https://github.com/kelBear/Classroom-Finder#readme"
 }
