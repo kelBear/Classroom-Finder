@@ -6,7 +6,7 @@ function updateCourse() {
 	var h = d.getHours();
 	var m = d.getMinutes();
 	var t= h*100+m;
-	var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+ 	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 	var w =days[d.getDay()];
 	$.ajax({
 		url: "getcourses.php",
@@ -19,11 +19,17 @@ function updateCourse() {
 				buildlist=buildlist+output[i].building;
 				buildlist=buildlist+output[i].room;
 
-				buildlist=buildlist+" ";
+				buildlist=buildlist+"<br>";
 				buildlist=buildlist+"<b>Class: </b>";
 				buildlist=buildlist+output[i].subject;
 				buildlist=buildlist+" ";
 				buildlist=buildlist+output[i].catalog_number;
+				buildlist=buildlist+"<br>";
+				buildlist=buildlist+"<b>Time: </b>";
+				buildlist=buildlist+output[i].start_time;
+				buildlist=buildlist+"-";
+				buildlist=buildlist+output[i].end_time;
+				buildlist=buildlist+"<br>";
 				buildlist=buildlist+"<br>";
 
 			}

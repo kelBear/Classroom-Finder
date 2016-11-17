@@ -43,6 +43,8 @@ body, html {
     position:absolute;
     width:20%;
     background:#FFF;
+    overflow:scroll;
+    overflow-x:hidden;
 }
 #botmain{
 	height: 95%;
@@ -54,6 +56,15 @@ body, html {
      width:80%;
      position:relative;
      float:right;
+}
+#searchtxt{
+	width: 80%;
+	height:30px;
+	background-color: #FFF;
+	color: #000;
+}
+#filter{
+	width: 100%
 }
 
 input{

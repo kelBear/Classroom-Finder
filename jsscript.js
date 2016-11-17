@@ -60,7 +60,7 @@ function loadavailable(buildings){
   var h = d.getHours();
   var m = d.getMinutes();
   var t = h*100+m;
-  var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   var w =days[d.getDay()];
   $.ajax({
   url: "getrooms.php",
@@ -207,13 +207,37 @@ function findClassroom(){
   navagation(pos, cl);
 
 }
+function loadfinder(input){
+  var building = input.split(" ")[0];
+  var room  = input.split(" ")[1];
+  $.ajax({
+  url: "getroom.php",
+  data: { 'building' : building, "room" : room},
+  type: 'POST',
+  dataType: 'json',
+  success: function(output) {
+    available = output;
+    findClassroom();
+  },
+  error: function(xhr, desc, err) {
+        console.log(xhr);
+        console.log("Details: " + desc + "\nError:" + err);
+      }
+  });
+}
 function startNavigation() {
   if(directionsDisplay){
     directionsDisplay.setMap(null);
   }
   var e = document.getElementById("Building");
   var building = e.options[e.selectedIndex].value;
-  loadavailable(building);
+  var input = document.getElementById("searchtxt").value;
+  if(input.length<=2){
+    loadavailable(building);
+  }
+  else{
+    loadfinder(input);
+  }
   var f = document.getElementById("Floor");
   var floor = f.options[f.selectedIndex].value;
 }

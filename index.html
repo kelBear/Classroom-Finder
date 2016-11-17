@@ -18,7 +18,7 @@
   <img id="arrow" src="arrow.png" class="thumbnail"/>
 </div>
 <div class="main">
-	<form action="">
+	<form action="" id="filter">
 		<select id="Building" onChange="updateCourse()">
 			<option value="ALL">ALL</option>
 			<option value="RCH">RCH</option>
@@ -30,9 +30,15 @@
             <option value="3">3</option>
             <option value="4">4</option>
 		</select>
-		<input id="startNavi" type="button" value="START NAVIGATION" onclick="startNavigation()">
+		
 	</form>
+		<form id="search" method="post" ng-submit="todoList.alert()" action="./result.html">
+				<input id="searchtxt" type="text" placeholder="Search Classroom"/>
+				<input id="startNavi" type="button" value="Start Navigation" onclick="startNavigation()"/>
+		</form>
+		
 	<div id="botmain">
+
 		<div id="sidebar">
 			<script type="text/javascript">
 	       		updateCourse();
