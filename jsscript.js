@@ -232,12 +232,19 @@ function startNavigation() {
   var e = document.getElementById("Building");
   var building = e.options[e.selectedIndex].value;
   var input = document.getElementById("searchtxt").value;
-  if(input.length<=2){
-    loadavailable(building);
+
+  loadavailable(building);
+  var f = document.getElementById("Floor");
+  var floor = f.options[f.selectedIndex].value;
+}
+function findroom() {
+  if(directionsDisplay){
+    directionsDisplay.setMap(null);
   }
-  else{
-    loadfinder(input);
-  }
+  var e = document.getElementById("Building");
+  var building = e.options[e.selectedIndex].value;
+  var input = document.getElementById("searchtxt").value;
+  loadfinder(input);
   var f = document.getElementById("Floor");
   var floor = f.options[f.selectedIndex].value;
 }
@@ -268,3 +275,4 @@ function navagation(from, to){
                               'Error: Cannot detect location' :
                               'Error: Your browser doesn\'t support geolocation');
       }
+

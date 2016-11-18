@@ -30,19 +30,22 @@
             <option value="3">3</option>
             <option value="4">4</option>
 		</select>
-		
+		<input id="startNavi" type="button" value="Start Navigation" onclick="startNavigation()"/>
 	</form>
-		<form id="search" method="post" ng-submit="todoList.alert()" action="./result.html">
-				<input id="searchtxt" type="text" placeholder="Search Classroom"/>
-				<input id="startNavi" type="button" value="Start Navigation" onclick="startNavigation()"/>
-		</form>
 		
 	<div id="botmain">
 
 		<div id="sidebar">
+			<form id="search" method="post" ng-submit="todoList.alert()" action="./result.html">
+					<input id="searchtxt" type="text" placeholder="Search Classroom (e.g. MC 2065)"/>
+					<input id="findroombutton" type="button" value="Go" onclick="findroom()"/>
+			</form>
+			<div id="sidecontent">
+				
+			</div>
 			<script type="text/javascript">
-	       		updateCourse();
-	    	</script>
+		       	updateCourse();
+		    </script>
 	    </div>
 
 	    <div id="map"></div>

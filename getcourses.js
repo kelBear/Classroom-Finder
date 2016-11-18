@@ -15,6 +15,7 @@ function updateCourse() {
 		dataType: 'json',
 		success: function(output) {
 			for( i=0;i<output.length; i++ ) {
+				buildlist=buildlist+"<div class=\"card\">";
 				buildlist=buildlist+"<b>Room: </b>";
 				buildlist=buildlist+output[i].building;
 				buildlist=buildlist+output[i].room;
@@ -29,8 +30,7 @@ function updateCourse() {
 				buildlist=buildlist+output[i].start_time;
 				buildlist=buildlist+"-";
 				buildlist=buildlist+output[i].end_time;
-				buildlist=buildlist+"<br>";
-				buildlist=buildlist+"<br>";
+				buildlist=buildlist+"</div>";
 
 			}
 			document.getElementById("sidebar").innerHTML = buildlist;
@@ -40,5 +40,6 @@ function updateCourse() {
 		    console.log("Details: " + desc + "\nError:" + err);
 		  }
 	});
+
 }
 //updateCourse();
