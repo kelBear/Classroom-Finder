@@ -1,18 +1,21 @@
 <?php
-/*$servername = "localhost";
-$username = "username";
-$password = "password";
-$dbname = "myDB";*/
+#### THIS GETS THE POSITION(LATITUDE, LONGITUDE) OF A GIVE ROOM ####
+
+
+include 'findDB.php';
 
 $building = $_POST['building'];
 $room = $_POST['room'];
 
-function pg_connection_string_from_database_url() {
-  extract(parse_url($_ENV["SE464_URL"]));
+$db = getDB();
+
+function pg_connection_string_from_database_url($db) {
+  extract(parse_url($_ENV[$db]));
   return "user=$user password=$pass host=$host dbname=" . substr($path, 1); # <- you may want to add sslmode=require there too
 }
 # Here we establish the connection. Yes, that's all.
-$pg_conn = pg_connect(pg_connection_string_from_database_url());
+$pg_conn = pg_connect(pg_connection_string_from_database_url($db));
+
 if (!$pg_conn) {
 	echo "Error: Cannot connect to server!";
 	return;

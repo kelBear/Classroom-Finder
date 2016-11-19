@@ -13,7 +13,7 @@ uw = UWaterlooAPI(api_key="013cadb105a7dc1943443cb5ebf7edde")
 # Open database connection
 # db = MySQLdb.connect("localhost","SE464","SE464project","classroomfinder" )
 try:
-    # urlparse.uses_netloc.append("postgres")
+    urlparse.uses_netloc.append("postgres")
     proc = subprocess.Popen(["heroku", "pg:credentials", sys.argv[1], "-a", "classroom-finder"], stdout=subprocess.PIPE,
                             shell=True)
     (constring, err) = proc.communicate()
@@ -36,6 +36,15 @@ try:
         host=hst,
         port=prt
     )
+    # urlparse.uses_netloc.append("postgres")
+    # url = urlparse.urlparse(os.environ["DATABASE_URL"])
+    # db = psycopg2.connect(
+    #     database=url.path[1:],
+    #     user=url.username,
+    #     password=url.password,
+    #     host=url.hostname,
+    #     port=url.port
+    # )
     cursorTruncate = db.cursor()
     cursorTruncate.execute("TRUNCATE TABLE courses")
     cursor = db.cursor()

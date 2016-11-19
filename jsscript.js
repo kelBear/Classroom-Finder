@@ -8,6 +8,10 @@ var allFiles = ['MC_F2','RCH_F3'];
 var RCH = [3];
 var MC = [2];
 
+var infoWindow;
+var roomInfoWindow;
+var findRoomInfoWindow;
+
 $(function(){
   //on floor change
   $("#Building").change(function () {
@@ -46,8 +50,8 @@ function loadFloor(floor) {
   }
 
   loadFiles(files);
-
 }
+
 function loadFiles(files) {
   for (var i = 0; i < files.length; i++) {
     var file = files[i];
@@ -55,7 +59,9 @@ function loadFiles(files) {
   }
 }
 
+// finds all available classrooms
 function loadavailable(buildings){
+  var buildlist = "";
   var d = new Date();
   var h = d.getHours();
   var m = d.getMinutes();
@@ -69,11 +75,12 @@ function loadavailable(buildings){
   dataType: 'json',
   success: function(output) {
     available = output;
-    findClassroom();
+    findClassroom("<b>Closest available classroom: </b><br>");
   },
   error: function(xhr, desc, err) {
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
+        alert("We weren't able to find available rooms! :(");
       }
   });
 }
@@ -120,7 +127,7 @@ function initMap() {
   });
 
   // where data is a GeoJSON feature collection
-  var roomInfoWindow = new google.maps.InfoWindow({map: map});
+  roomInfoWindow = new google.maps.InfoWindow({map: map});
   roomInfoWindow.close();
 
   map.data.setStyle(function(feature) {
@@ -148,31 +155,31 @@ function initMap() {
   loadFloor(floor);
 
   // GPS location
-        // Try HTML5 geolocation.
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+    pos = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    };
 
-
-            //map.setCenter(pos);
-            var infoWindow = new google.maps.InfoWindow({map: map});
-            infoWindow.setPosition(pos);
-            infoWindow.setContent('Your Location');
-            //map.setCenter(pos);
-
-          }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-          });
-        } else {
-          // Browser doesn't support Geolocation
-          handleLocationError(false, infoWindow, map.getCenter());
-    }
+    infoWindow = new google.maps.InfoWindow({map: map});
+    infoWindow.setPosition(pos);
+    infoWindow.setContent('Your Location');
+    }, function() {
+      handleLocationError(true, infoWindow, map.getCenter());
+    });
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, map.getCenter());
+  }
 }
+
 function rad(x) {return x*Math.PI/180;}
-function findClassroom(){
+
+function findClassroom(content){
+  if(directionsDisplay){
+    directionsDisplay.setMap(null);
+  }
     var lat = pos.lat;
     var lng = pos.lng;
     var R = 6371; // radius of earth in km
@@ -201,12 +208,15 @@ function findClassroom(){
   //   map: map,
   // });
   var cl = {lat:parseFloat( available[closest].lat) ,lng:parseFloat(available[closest].lng)};
-  var infoWindow = new google.maps.InfoWindow({map: map});
-            infoWindow.setPosition(cl);
-            infoWindow.setContent(available[closest].building + " " + available[closest].room);
+  if (findRoomInfoWindow != null) findRoomInfoWindow.close();
+  findRoomInfoWindow = new google.maps.InfoWindow({map: map}); 
+            findRoomInfoWindow.setPosition(cl);
+            findRoomInfoWindow.setContent(content + available[closest].building + " " + available[closest].room);
   navagation(pos, cl);
 
 }
+
+// looks for a single room
 function loadfinder(input){
   var building = input.split(" ")[0];
   var room  = input.split(" ")[1];
@@ -217,18 +227,17 @@ function loadfinder(input){
   dataType: 'json',
   success: function(output) {
     available = output;
-    findClassroom();
+    findClassroom("");
   },
   error: function(xhr, desc, err) {
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
+        alert("We weren't able to find the classroom you are looking for! :(\nDid you try using the format 'MC 2065'?");
       }
   });
 }
+
 function startNavigation() {
-  if(directionsDisplay){
-    directionsDisplay.setMap(null);
-  }
   var e = document.getElementById("Building");
   var building = e.options[e.selectedIndex].value;
   var input = document.getElementById("searchtxt").value;
@@ -237,10 +246,8 @@ function startNavigation() {
   var f = document.getElementById("Floor");
   var floor = f.options[f.selectedIndex].value;
 }
+
 function findroom() {
-  if(directionsDisplay){
-    directionsDisplay.setMap(null);
-  }
   var e = document.getElementById("Building");
   var building = e.options[e.selectedIndex].value;
   var input = document.getElementById("searchtxt").value;
@@ -248,6 +255,7 @@ function findroom() {
   var f = document.getElementById("Floor");
   var floor = f.options[f.selectedIndex].value;
 }
+
 function navagation(from, to){
   var directionsService = new google.maps.DirectionsService();
   directionsDisplay = new google.maps.DirectionsRenderer();
@@ -269,10 +277,10 @@ function navagation(from, to){
          });
 }
 
-      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        //infoWindow.setPosition(pos);
-        alert(browserHasGeolocation ?
-                              'Error: Cannot detect location' :
-                              'Error: Your browser doesn\'t support geolocation');
-      }
+function handleLocationError(browserHasGeolocation, infoWindow, pos) { 
+  //infoWindow.setPosition(pos); 
+  alert(browserHasGeolocation ?     
+      'Error: Cannot detect location' :      
+       'Error: Your browser doesn\'t support geolocation');
+}
 

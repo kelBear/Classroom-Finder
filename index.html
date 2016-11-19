@@ -36,10 +36,14 @@
 	<div id="botmain">
 
 		<div id="sidebar">
-			<form id="search" method="post" ng-submit="todoList.alert()" action="./result.html">
+			<form id="search" action="javascript:findroom();">
 					<input id="searchtxt" type="text" placeholder="Search Classroom (e.g. MC 2065)"/>
 					<input id="findroombutton" type="button" value="Go" onclick="findroom()"/>
 			</form>
+			<select id="Option" onChange="updateCourse()">
+				<option value="available">View Available Rooms</option>
+				<option value="classes">View Current Classes</option>
+			</select>
 			<div id="sidecontent">
 				
 			</div>
