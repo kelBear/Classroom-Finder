@@ -1,7 +1,9 @@
-<?php
+<?php header('Access-Control-Allow-Origin: *');
 #### THIS GETS ALL COURSES THAT CURRENTLY HAVE A CLASS ####
 
 include 'findDB.php';
+=======
+<?php header('Access-Control-Allow-Origin: *');
 
 $building = $_POST['building'];
 $dayofweek = $_POST['dow'];

@@ -11,6 +11,19 @@ function updateCourse() {
  	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 	var w =days[d.getDay()];
 
+	$.ajax({
+		url: "http://classroom-finder.herokuapp.com/getcourses.php",
+		data: { 'building' : buildings, 'dow': w, 'hr': t },
+		type: 'POST',
+		crossDomain: true,
+		dataType: 'json',
+		success: function(output) {
+			for( i=0;i<output.length; i++ ) {
+				buildlist=buildlist+"<div class=\"card\">";
+				buildlist=buildlist+"<b>Room: </b>";
+				buildlist=buildlist+output[i].building;
+				buildlist=buildlist+output[i].room;
+
 	if (option == "available") {
 		  $.ajax({
 			  url: "getrooms.php",
