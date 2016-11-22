@@ -1,9 +1,9 @@
-<?php header('Access-Control-Allow-Origin: *');
+<?php
+header('Access-Control-Allow-Origin: *');
+header('Content-Type: application/json');
 #### THIS GETS ALL COURSES THAT CURRENTLY HAVE A CLASS ####
 
 include 'findDB.php';
-=======
-<?php header('Access-Control-Allow-Origin: *');
 
 $building = $_POST['building'];
 $dayofweek = $_POST['dow'];

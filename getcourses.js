@@ -11,22 +11,9 @@ function updateCourse() {
  	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 	var w =days[d.getDay()];
 
-	$.ajax({
-		url: "http://classroom-finder.herokuapp.com/getcourses.php",
-		data: { 'building' : buildings, 'dow': w, 'hr': t },
-		type: 'POST',
-		crossDomain: true,
-		dataType: 'json',
-		success: function(output) {
-			for( i=0;i<output.length; i++ ) {
-				buildlist=buildlist+"<div class=\"card\">";
-				buildlist=buildlist+"<b>Room: </b>";
-				buildlist=buildlist+output[i].building;
-				buildlist=buildlist+output[i].room;
-
 	if (option == "available") {
 		  $.ajax({
-			  url: "getrooms.php",
+			  url: "https://classroom-finder.herokuapp.com/getrooms.php",
 			  data: { 'building' : buildings, 'dow': w, 'hr': t},
 			  type: 'POST',
 			  dataType: 'json',
@@ -38,7 +25,7 @@ function updateCourse() {
 					        buildlist=buildlist+output[i].room;
 
 					        buildlist=buildlist+"<br>";
-					        if (output[i].nextclass == "00:00") {
+					        if (output[i].nextclass == "99:00") {
 					          buildlist = buildlist + "This room is free for the rest of the day!";
 					        }
 					        else {
@@ -52,8 +39,10 @@ function updateCourse() {
 					          var diff = 60*(Math.floor(intnext/100) - Math.floor(t/100))+(intnext%100-t%100);
 					          var hours = Math.floor(diff/60);
 					          var minutes = diff%60;
-					          if (hours != 0) buildlist = buildlist + "This room is free for " + hours + " hours and " + minutes + " minutes";
-					          else buildlist = buildlist + "This room is free for " + minutes + " minutes";
+					          if (hours == 0) buildlist = buildlist + "This room is free for " + minutes + " minutes";
+					          if (hours != 0) buildlist = buildlist + "This room is free for " + hours;
+					          if (hours == 1) buildlist = buildlist + " hour and " + minutes + " minutes";
+					          if (hours > 1) buildlist = buildlist + " hours and " + minutes + " minutes";
 					        }
 					        buildlist=buildlist+"</div>";
 					      }
@@ -71,7 +60,7 @@ function updateCourse() {
 	}
 	else {
 		$.ajax({
-			url: "getcourses.php",
+			url: "https://classroom-finder.herokuapp.com/getcourses.php",
 			data: { 'building' : buildings, 'dow': w, 'hr': t },
 			type: 'POST',
 			dataType: 'json',

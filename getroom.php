@@ -1,4 +1,6 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header('Content-Type: application/json');
 #### THIS GETS THE POSITION(LATITUDE, LONGITUDE) OF A GIVE ROOM ####
 
 

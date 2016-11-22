@@ -67,6 +67,8 @@ try:
                 w = "false"
                 th = "false"
                 f = "false"
+                s = "false"
+                sun = "false"
 
                 while i<len(weekdays):
                     if weekdays[i]=='M':
@@ -88,8 +90,8 @@ try:
                 start_time = c['start_time']
                 end_time = c['end_time']
                 cursorInsert = db.cursor()
-                cursorInsert.execute('''INSERT INTO courses VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)''',
-                                     (sub, catalog_number, title, m, t, w, th, f, start_time, end_time, building, room))
+                cursorInsert.execute('''INSERT INTO courses VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+                                     (sub, catalog_number, title, m, t, w, th, f, s, sun, start_time, end_time, building, room))
                 cursorInsert.execute('COMMIT')
                 print "inserted class..."
         except:
