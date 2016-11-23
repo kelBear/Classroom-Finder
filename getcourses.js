@@ -1,20 +1,23 @@
 function updateCourse() {
+
 	var buildlist="";
 	var e = document.getElementById("Building");
 	var buildings = e.options[e.selectedIndex].value;
 	var f = document.getElementById("Option");
 	var option = f.options[f.selectedIndex].value;
+	var g = document.getElementById("Floor");
+	var floor = g.options[g.selectedIndex].value;
 	var d = new Date();
 	var h = d.getHours();
 	var m = d.getMinutes();
 	var t= h*100+m;
  	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-	var w =days[d.getDay()];
+	var w = days[d.getDay()];
 
 	if (option == "available") {
 		  $.ajax({
 			  url: "https://classroom-finder.herokuapp.com/getrooms.php",
-			  data: { 'building' : buildings, 'dow': w, 'hr': t},
+			  data: { 'building' : buildings, 'dow': w, 'hr': t, 'floor': floor },
 			  type: 'POST',
 			  dataType: 'json',
 			  success: function(output) {
@@ -61,7 +64,7 @@ function updateCourse() {
 	else {
 		$.ajax({
 			url: "https://classroom-finder.herokuapp.com/getcourses.php",
-			data: { 'building' : buildings, 'dow': w, 'hr': t },
+			data: { 'building' : buildings, 'dow': w, 'hr': t, 'floor': floor },
 			type: 'POST',
 			dataType: 'json',
 			success: function(output) {

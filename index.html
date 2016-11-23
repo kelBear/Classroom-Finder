@@ -3,13 +3,27 @@
 <head>
 	<title>Classroom Finder</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="js/leaflet/leaflet.css" />
-  <script src="js/leaflet/leaflet.js"></script>
-  <script src="js/leaflet-indoor.js"></script>
+</script>  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src = "getcourses.js"></script>
-  <script src="jsscript.js"></script>
+
+
+<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js'></script>
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.css' />
+<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.js'></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" >
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="bootstrap/js/bootstrap.min.js" ></script>
+
+<script src="jsscript.js"></script>
+
+
 
 </head>
 
@@ -18,51 +32,52 @@
   <p id="title">CLASSROOM <b>F I N D E R</b></p>
   <img id="arrow" src="arrow.png" class="thumbnail"/>
 </div>
+
+<div id="dialog1" title="Dialog Title" hidden="hidden">
+  <input id="startNavi" type="button" value="Start Navigation" onclick="startNavigation()"/>
+  <div id='calendar'></div>
+</div>
+
+
 <div class="main">
-	
-		
+
+
 	<div id="botmain">
 			<div id="sidebar">
+				<input id="startNavi" type="button" value="Start Navigation" onclick="startNavigation()"/>
+				<form id="filters" action="">
 
-				<form action="">
-				    <input id="startNavi" type="button" value="Start Navigation" onclick="startNavigation()"/>
-					<select id="Building" onChange="updateCourse()">
-						<option value="ALL">Filter Buildings</option>
-						<option value="RCH">RCH</option>
-						<option value="MC">MC</option>
+					<select id="Building" onChange="buildingChanged()"></select>
+					<select id="Floor" onChange="updateCourse()">
 					</select>
-					<select id="Floor">
-						<option value="ALL">Filter Floors</option>
-			            <option value="1">1</option>
-			            <option value="2">2</option>
-			            <option value="3">3</option>
-			            <option value="4">4</option>
-					</select>				
 				</form>
 
 			<form id="search" action="javascript:findroom();">
-					<input id="searchtxt" type="text" placeholder="Search Classroom (e.g. MC 2065)"/>
+					<input id="searchtxt" type="text" placeholder="Search (e.g. MC 2065)"/>
 					<input id="findroombutton" type="button" value="Go" onclick="findroom()"/>
 			</form>
 			<select id="Option" onChange="updateCourse()">
 				<option value="available">View Available Rooms</option>
 				<option value="classes">View Current Classes</option>
 			</select>
+      <p id="available">
+        ...
+      </p>
+
 			<div id="sidecontent">
-				
+
 			</div>
-			<script type="text/javascript">
-		       	updateCourse();
-		    </script>
 	    </div>
-	    <div id="map"></div>
+
+        <div id="tt" class="custom-tooltip"></div>
+  	    <div id="map"></div>
 	    <script async defer
 	        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw2WE6s2obeQ2fk195ukE3wLQ4_B63cEo&callback=initMap">
 	    </script>
     </div>
 
 </div>
-	
+
 	<script>
 	$("#arrow").on("click", function() {
 		$('html,body').animate({

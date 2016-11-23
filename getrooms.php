@@ -9,6 +9,7 @@ include 'findDB.php';
 $building = $_POST['building'];
 $dayofweek = $_POST['dow'];
 $hour = $_POST['hr'];
+$floor = $_POST['floor'];
 
 $db = getDB();
 
@@ -41,21 +42,40 @@ if ($building=="ALL"){
 	ON temp.building = A.building AND temp.room = A.room
 	ORDER BY nextclass DESC, building ASC, room ASC;");
 } else{
-	$result = pg_query($pg_conn, "WITH temp AS (
-		SELECT DISTINCT building_rooms.building, building_rooms.room, building_rooms.lat, building_rooms.lng FROM building_rooms, courses
-		WHERE building_rooms.building = courses.building AND building_rooms.room = courses.room AND building_rooms.building = '" . $building . "'
-		EXCEPT
-		SELECT DISTINCT building_rooms.building, building_rooms.room, building_rooms.lat, building_rooms.lng
-		FROM building_rooms, courses WHERE building_rooms.building = courses.building AND building_rooms.room = courses.room AND building_rooms.building = '" . $building . "'
-		AND " .$dayofweek . "='true' AND " . $hour . " > cast(CONCAT(SUBSTR(start_time, 1,2), SUBSTR(start_time, 4,5)) AS INT)
-		AND " . $hour . " < cast(CONCAT(SUBSTR(end_time, 1,2),SUBSTR(end_time, 4,5)) AS INT)
-	)
+	if ($floor == "ALL") {
+		$result = pg_query($pg_conn, "WITH temp AS (
+			SELECT DISTINCT building_rooms.building, building_rooms.room, building_rooms.lat, building_rooms.lng FROM building_rooms, courses
+			WHERE building_rooms.building = courses.building AND building_rooms.room = courses.room AND building_rooms.building = '" . $building . "' 
+			EXCEPT
+			SELECT DISTINCT building_rooms.building, building_rooms.room, building_rooms.lat, building_rooms.lng
+			FROM building_rooms, courses WHERE building_rooms.building = courses.building AND building_rooms.room = courses.room AND building_rooms.building = '" . $building . "' 
+			AND " .$dayofweek . "='true' AND " . $hour . " > cast(CONCAT(SUBSTR(start_time, 1,2), SUBSTR(start_time, 4,5)) AS INT)
+			AND " . $hour . " < cast(CONCAT(SUBSTR(end_time, 1,2),SUBSTR(end_time, 4,5)) AS INT)
+		)
 
-	SELECT temp.building, temp.room, temp.lat, temp.lng, COALESCE(A.nextclass, '99:00') nextclass FROM temp
-	LEFT JOIN
-	(SELECT building, room, MIN(start_time) nextclass FROM courses WHERE CAST(CONCAT(SUBSTR(start_time, 1, 2), SUBSTR(start_time, 4, 5)) AS int) > " . $hour . " AND " . $dayofweek . " = 'true'
-	GROUP BY building, room) A
-	ON temp.building = A.building AND temp.room = A.room ORDER BY nextclass DESC, building ASC, room ASC;");
+		SELECT temp.building, temp.room, temp.lat, temp.lng, COALESCE(A.nextclass, '99:00') nextclass FROM temp
+		LEFT JOIN
+		(SELECT building, room, MIN(start_time) nextclass FROM courses WHERE CAST(CONCAT(SUBSTR(start_time, 1, 2), SUBSTR(start_time, 4, 5)) AS int) > " . $hour . " AND " . $dayofweek . " = 'true'
+		GROUP BY building, room) A
+		ON temp.building = A.building AND temp.room = A.room ORDER BY nextclass DESC, building ASC, room ASC;");
+	}
+	else {
+		$result = pg_query($pg_conn, "WITH temp AS (
+			SELECT DISTINCT building_rooms.building, building_rooms.room, building_rooms.lat, building_rooms.lng FROM building_rooms, courses
+			WHERE building_rooms.building = courses.building AND building_rooms.room = courses.room AND building_rooms.building = '" . $building . "' AND SUBSTR(building_rooms.room, 1, 1) = '" . $floor . "' 
+			EXCEPT
+			SELECT DISTINCT building_rooms.building, building_rooms.room, building_rooms.lat, building_rooms.lng
+			FROM building_rooms, courses WHERE building_rooms.building = courses.building AND building_rooms.room = courses.room AND building_rooms.building = '" . $building . "' AND SUBSTR(building_rooms.room, 1, 1) = '" . $floor . "' 
+			AND " .$dayofweek . "='true' AND " . $hour . " > cast(CONCAT(SUBSTR(start_time, 1,2), SUBSTR(start_time, 4,5)) AS INT)
+			AND " . $hour . " < cast(CONCAT(SUBSTR(end_time, 1,2),SUBSTR(end_time, 4,5)) AS INT)
+		)
+
+		SELECT temp.building, temp.room, temp.lat, temp.lng, COALESCE(A.nextclass, '99:00') nextclass FROM temp
+		LEFT JOIN
+		(SELECT building, room, MIN(start_time) nextclass FROM courses WHERE CAST(CONCAT(SUBSTR(start_time, 1, 2), SUBSTR(start_time, 4, 5)) AS int) > " . $hour . " AND " . $dayofweek . " = 'true'
+		GROUP BY building, room) A
+		ON temp.building = A.building AND temp.room = A.room ORDER BY nextclass DESC, building ASC, room ASC;");
+	}
 }
 if (!pg_num_rows($result)) {
   print("Warning: No results returned!\n");
